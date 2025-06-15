@@ -18,26 +18,42 @@ import com.example.lab12.R
 @Composable
 fun MapScreen() {
     val context = LocalContext.current
+
+    // Centro de la cámara en Arequipa
     val arequipaLocation = LatLng(-16.4040102, -71.559611)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(arequipaLocation, 12f)
     }
+
+    // Cargar el ícono personalizado
+    var customIcon by remember { mutableStateOf<BitmapDescriptor?>(null) }
+    LaunchedEffect(context) {
+        customIcon = BitmapDescriptorFactory.fromResource(R.drawable.montana)
+    }
+
+    // Lista de ubicaciones
+    val locations = listOf(
+        LatLng(-16.433415, -71.5442652), // JLByR
+        LatLng(-16.4205151, -71.4945209), // Paucarpata
+        LatLng(-16.3524187, -71.5675994)  // Zamacola
+    )
 
     Box(modifier = Modifier.fillMaxSize()) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState
         ) {
-            // Aquí dentro ya es seguro usar BitmapDescriptorFactory
-            val customIcon: BitmapDescriptor = remember {
-                BitmapDescriptorFactory.fromResource(R.drawable.montana)
+            // Agregar un marcador para cada ubicación
+            locations.forEachIndexed { index, location ->
+                customIcon?.let {
+                    Marker(
+                        state = rememberMarkerState(position = location),
+                        icon = it,
+                        title = "Ubicación ${index + 1}",
+                        snippet = "Punto de interés"
+                    )
+                }
             }
-
-            Marker(
-                state = rememberMarkerState(position = arequipaLocation),
-                icon = customIcon,
-                title = "Arequipa, Perú"
-            )
         }
     }
 }
