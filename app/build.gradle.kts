@@ -42,6 +42,9 @@ android {
 
 dependencies {
 
+    implementation("com.google.accompanist:accompanist-permissions:0.28.0")
+
+
     val mapsComposeVersion = "4.4.1"
 
     // Google Maps Compose
